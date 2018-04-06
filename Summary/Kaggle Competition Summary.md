@@ -2,15 +2,21 @@
 
 ###1.1 Overview
 
-**Goal**: The aim of this competition is to determine the relationship between recent past order book events and future stock price mean reversion following shocks to liquidity: **To submit predictions based on a test dataset containing 50,000 rows.**
+**Goal**: 
 
-**Parameters** include: Order Arrival Rate, Bid-ask Spread, Transaction Size, Timing, Trading Volume etc.
+- The aim of this competition is to determine the relationship between recent past order book events and future stock price mean reversion following shocks to liquidity.
 
-**Evaluation Method** : Root Mean Square Error(RMSE) 
+**Submission Format(Things to be predicted)** : 
+
+- For each observation a participant should provide 100 numbers describing the next 50 bid and ask prices(from t51 to t100) following a liquidity shock. There should be 50,001 rows in total (50,000 entries plus a header row) and 101 columns for each row.
+
+**Evaluation Method** : 
+
+- Root Mean Square Error(RMSE) ：$\sqrt{\frac{\Sigma_{t=1}^n(\hat{y_t}-y_t)^2}{n}}$, where $\hat{y_t}$ and $y_t$ are the predicted/actual value respectively.
 
 ### 1.2 Data
 
-一共提供了4个文件，train.csv & test.csv, 以及 example_entry_example.csv和example_entry_naive.csv, 似乎是提供了两种输出格式的示例，但我不知道两者的区别是什么，我把它们都读入pandas.DataFrame，进行比对结果如下：
+The competition host provide 4 files for preparation，train.csv & test.csv, plus example_entry_example.csv&example_entry_naive.csv, the last two seems to be used as submission template, though I can't tell their difference. But it seems that these two files have similiar dimension, and differences seems to have patterns. Here's the comparison using pandas.DataFrame：
 
 ```python
 In [26]: ex_entry_linear == ex_entry_naive
@@ -35,15 +41,17 @@ Out[26]:
 
 
 
-Anyway, 数据中的label含义如下：
+Anyway, the meaning of provided labels in training/test set are shown as below：
 
-![mage-20180401192920](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804011929205.png)
-
-![mage-20180401193243](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804011932438.png)
+![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Algorithmic_Trading_Challenge/f1.png)
 
 
 
-各个文件的数据量如下
+![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Algorithmic_Trading_Challenge/f2.png)
+
+
+
+The Size of each files are listed:
 
 ```python
 ##train.csv
@@ -65,9 +73,28 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 
 
 
-### 1.3 Winner's Solution [PDF Online](http://www.ms.k.u-tokyo.ac.jp/2013/Kaggle.pdf)
+### 1.3 Winner's Solution [PDF](http://www.ms.k.u-tokyo.ac.jp/2013/Kaggle.pdf)
 
 Key Methods: **Random Forest(随机森林)，Ensemble Methods(集成学习) and Feature Extractions.**
+
+
+
+#### Results: 
+
+- Ranked 1st in the private leaderboard, 4th in the public leaderboard.
+
+#### Work Flow:
+
+- **Step1: Time Interval Partitioning Algorithm**: Due to identity between t=50 and t=51, the partition start from t=52 to t=100. Use greedy algorithm to make partition(when the error in algorithm step7 begins to rise, then stop and separate ), and use different sub-models($M_{bit}(t)$  & $M_{ask}(t)$  for bit/ask prediction respectively). Furthermore, assume the length of later segmentation is larger than the earlier ones(length($C_{i+1}$) > length($C_i$)), this is derived from the main hypothesis of the model:
+
+  ```reStructuredText
+  'an always increasing prediction error may require averaging longer price time series to obtain a constant price prediction with an acceptable error' -CITED
+
+  ```
+
+  ​
+
+- Step2
 
 #### 1.3.1 Step1: Time Interval Partitioning Algorithm(时间分段)
 
