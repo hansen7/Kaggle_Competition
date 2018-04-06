@@ -73,11 +73,11 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 
 
 
-### 1.3 Winner's Solution [PDF](http://www.ms.k.u-tokyo.ac.jp/2013/Kaggle.pdf)
+### 1.3 Selected Solutions
 
 **Key Methods: **Time Partitioning Prediction, Random Forest, Ensemble Methods and Feature Extractions.
 
-
+### 1.3.1 [Top1 Solution](http://www.ms.k.u-tokyo.ac.jp/2013/Kaggle.pdf) 
 
 #### Results: 
 
@@ -108,7 +108,7 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 
 ####
 
-- **Step4: Feature Selection**, the algorithm are divided into 2 parts(1. step1 - 8: to get the quasi-optimized $S_f$ quickly, 2. Rest of the steps: to make local adjustments on these $S_f$ feature set ).
+- **Step4: Feature Selection**, inspired by a similiar method applied to the [*Kaggle*'s Heritage Health Prize dataset.](https://www.kaggle.com/c/hhp) The algorithm are divided into 2 parts(1. step1 - 8: to get the quasi-optimized $S_f$ quickly, 2. Rest of the steps: to make local adjustments on these $S_f$ feature set ).
 
   ![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Algorithmic_Trading_Challenge/f6.png)
 
@@ -116,14 +116,18 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 
 - **Step5: Validation**: 
 
-  - **Feature Set** Validation: Ironically, the author used the same $S_f$ set for both $F_b$ and $F_a$ (bit and ask feature set for bit and ask price respectively) at the final stage due to the lack of time for calcu dlation.
-  - **Optimal Time Segmentation**: 
+  - **Feature Set** Validation: Ironically, the author used the same $S_f$ set for both $F_b$ and $F_a$ (bit and ask feature set for bit and ask price respectively) at the final stage due to the lack of time for calcu dlation. **BUT, for the different time period, the $F_b$ is different.**
+  - **Optimal Time Segmentation**: The final partition of the time period is {t=52, t=53, t=54–55, t=56–58, t=59–64, t=65–73, t=74–100}, which I thought quite make sense: the nearest period has the highest weight, so is sepearted.
 
-- the final partition of the time period is {t=52, t=53, t=54–55, t=56–58, t=59–64, t=65–73, t=74–100}
 
-#### 1.3.5 Validation
+- **Model Performance via methods**:  
 
-- 最后的time interval partition的结果是{52–52, 53–53, 54–55, 56–58, 59–64, 65–73, 74–100}，我觉得还挺make sense的，最近的时间点都单独分开，cost所在的weight较大
+  Work Flow:
+
+####Comment 
+
+- Pros: 
+- Cons:
 
 ### 1.4 Comment
 
