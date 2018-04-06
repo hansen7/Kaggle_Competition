@@ -75,7 +75,7 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 
 ### 1.3 Winner's Solution [PDF](http://www.ms.k.u-tokyo.ac.jp/2013/Kaggle.pdf)
 
-Key Methods: **Random Forest(随机森林)，Ensemble Methods(集成学习) and Feature Extractions.**
+Key Methods: **Time Partitioning Prediction, Random Forest，Ensemble Methods and Feature Extractions.**
 
 
 
@@ -88,17 +88,17 @@ Key Methods: **Random Forest(随机森林)，Ensemble Methods(集成学习) and 
 - **Step1: Time Interval Partitioning Algorithm**: Due to identity between t=50 and t=51, the partition start from t=52 to t=100. Use greedy algorithm to make partition(when the error in algorithm step7 begins to rise, then stop and separate ), and use different sub-models($M_{bit}(t)$  & $M_{ask}(t)$  for bit/ask prediction respectively). Furthermore, assume the length of later segmentation is larger than the earlier ones(length($C_{i+1}$) > length($C_i$)), this is derived from the main hypothesis of the model:
 
   ```reStructuredText
-  'an always increasing prediction error may require averaging longer price time series to obtain a constant price prediction with an acceptable error' -CITED
-
+  'an always increasing prediction error may require averaging longer price time series to obtain a constant price prediction with an acceptable error' 
+  													-Cited from author
   ```
 
   ![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Algorithmic_Trading_Challenge/f3.png)
 
-- Step2
+- **Step2**
 
 #### 1.3.1 Step1: Time Interval Partitioning Algorithm(时间分段)
 
-- 观察数据的t=51与t=50时的数据相同，因此从52开始预测，52~100分为K段($C_i \ to\  C_K​$)，每段$C_i​$用两个sub-model描述(预测bit的$M_{bit}(t)​$和预测ask的$M_{ask}(t)​$)，且分段长度满足length($C_{i+1}​$) > length($C_i​$)，这是由模型的main hypothesis（*“The predictive potential closer to the liquidity shock should be higher and it should degrade with the distance.”*）决定的：**an always increasing prediction error may require averaging longer price time series to obtain a constant price prediction with an acceptable error.**
+- 观察数据的t=51与t=50时的数据相同，因此从52开始预测，52~100分为K段($C_i \ to\  C_K$)，每段$C_i$用两个sub-model描述(预测bit的$M_{bit}(t)$和预测ask的$M_{ask}(t)$)，且分段长度满足length($C_{i+1}$) > length($C_i$)，这是由模型的main hypothesis（*“The predictive potential closer to the liquidity shock should be higher and it should degrade with the distance.”*）决定的：**an always increasing prediction error may require averaging longer price time series to obtain a constant price prediction with an acceptable error.**
 
   ![mage-20180402153503](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804021535039.png)
 
