@@ -77,13 +77,13 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 
 **Key Methods: **Time Partitioning Prediction, Random Forest, Ensemble Methods and Feature Extractions.
 
-### 1.3.1 [Top1 Solution](http://www.ms.k.u-tokyo.ac.jp/2013/Kaggle.pdf) 
+### a. [Top1 Solution](http://www.ms.k.u-tokyo.ac.jp/2013/Kaggle.pdf) 
 
-#### Results: 
+#### a. Results: 
 
 - Ranked 1st in the private leaderboard, 4th in the public leaderboard.
 
-#### Work Flow:
+#### a. Work Flow:
 
 - **Step1: Time Interval Partitioning Algorithm**, Due to identity between t=50 and t=51, the partition start from t=52 to t=100. Use greedy algorithm to make partition(when the error in algorithm step7 begins to rise, then stop and separate ), and use different sub-models($M_{bit}(t)$  & $M_{ask}(t)$  for bit/ask prediction respectively). Furthermore, assume the length of later segmentation is larger than the earlier ones(length($C_{i+1}$) > length($C_i$)), this is derived from the main hypothesis of the model:
 
@@ -122,16 +122,18 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 
 - **Model Performance via methods**:  
 
-  Work Flow:
+  ![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Algorithmic_Trading_Challenge/f7.png)
 
-####Comment 
+####a. Comments 
 
-- Pros: 
-- Cons:
+- Pros: Innovated on both *Time Segmentation* and *Feature Selction* process.
+- Cons: In reality, the company only cares about the most recent prediction on the price, input new data and genreate new prediction, so there won't be error accumulation, the *Time Segmentation* process seems to be meaningless, plus, the feature set for the $F_a$ is not optimal.
 
-### 1.4 Comment
+### b. [Forum Disscussion]
 
-这题数据是由London Stocks Exchange提供的，较为原始，也有较明晰的参考资料，虽然是用R语言写的，亮点是将需要预测的时间进行分段，不过这篇solution很早，估计可能time interval partition是现在的主流做法了。。后面的竞赛evaluation用的是Weighted Mean Absolute Error。
+#### b. Results: 
+
+- ​
 
 #  
 
