@@ -92,21 +92,11 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
   													-Cited from author
   ```
 
-  ![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Algorithmic_Trading_Challenge/f4.png)
+  Different $M_{bit, i}(t)$  & $M_{ask, i}(t)$ are used to describe each time periods($C_i$):![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Algorithmic_Trading_Challenge/figure4.png)
 
   ![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Algorithmic_Trading_Challenge/f3.png)
 
-- **Step2**
-
-#### 1.3.1 Step1: Time Interval Partitioning Algorithm(时间分段)
-
-- 观察数据的t=51与t=50时的数据相同，因此从52开始预测，52~100分为K段($C_i \ to\  C_K$)，每段$C_i$用两个sub-model描述(预测bit的$M_{bit}(t)$和预测ask的$M_{ask}(t)$)，且分段长度满足length($C_{i+1}$) > length($C_i$)，这是由模型的main hypothesis（*“The predictive potential closer to the liquidity shock should be higher and it should degrade with the distance.”*）决定的：**an always increasing prediction error may require averaging longer price time series to obtain a constant price prediction with an acceptable error.**
-
-  ![mage-20180402153503](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804021535039.png)
-
-- 采用的贪心算法，当error出现下降时，即开始划分，算法的时间复杂度为O(n)
-
-![mage-20180402153428](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804021534280.png)
+- **Step2: Feature Extraction**: The author have extracted over 150 features(divided into 4 classes: *Price, Liquidity book, Spread, Rate*) from the original data, using a [specified R module](http:// cran.r-project.org/web/packages/TTR/TTR.pdf]) (I guess)
 
 ####1.3.2 Feature Extraction 
 
