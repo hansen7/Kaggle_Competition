@@ -112,25 +112,27 @@ Key Methods: **Random Forest，Gradient Boosting Machine**
 
   ​
 
-- Sergey Yurgens(6th in this Competition)
+- Wayne Zhang (13th in this Competition)
 
-  Here is the secret recipe for Linear Regression meal:
-
-  - go to your friendly neighbor datastore and choose couple fresh pieces of data (day1 and last 50k) 
-  - cut out bones and extra fat (leave only columns 5 170 206 207) 
-  - cook separately "seller initiated" transactions and "buyer initiated" transactions using your favorite linear regression function (do it separately for each askN and bidN to be predicted) 
-  - use 200 created LRs to calculate required predictions and nicely plate them into submission ﬁle
-  - Serve hot, because you do not want to miss 0.77590 public score and 0.77956 private score :)
+  - I did have the same experience of overﬁtting RF to training data. That's why I turned to linear regression. I agree with Halla, so there may be some normalization.
+  - I also used time weighted VWAP, but I found std not that helpful.
+  - ​
 
   ​
 
-- Cole Harris • (9th in this Competition) 
+  ​
 
-  - I had separate models for t\<60 & t>60.Results:
+- Glen • (7th in this Competition) 
 
-- ​
+  - I ended up using a combination of locally weighted non-linear regression, random forests and gradient boosting. I only used variables up to curvebasedprice_last4.
 
+    ​
 
+- ivo • (14th in this Competition) 
+
+  - Generated some stats from the curve_based_prices_lastx and trade_price_lastxs (sd, average, median, linear extrapolation) and from some other features like present value of a bond with a given maturity and coupon with 10% reference rates. 
+  - I only modeled the trading price of a bond, where the received_time_diﬀerence_last1 > 300, because the trade_price_last1 was a suﬀicient predictor on average for those with rtdl1<300. (That may have been a mistake.
+  - Tried some regression techniques: linear regression, PACE regression, Regression trees (bagged), neural nets, local linear regression. PACE was great overall, neural nets were good where bonds were callable (handled the the callable non callable bonds separately). I clustered the dataset with the training set and reached the highest accuracy by voteing together 69 diﬀerent models.
 
 
 
