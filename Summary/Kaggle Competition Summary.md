@@ -85,7 +85,7 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 
 #### Work Flow:
 
-- **Step1: Time Interval Partitioning Algorithm**: Due to identity between t=50 and t=51, the partition start from t=52 to t=100. Use greedy algorithm to make partition(when the error in algorithm step7 begins to rise, then stop and separate ), and use different sub-models($M_{bit}(t)$  & $M_{ask}(t)$  for bit/ask prediction respectively). Furthermore, assume the length of later segmentation is larger than the earlier ones(length($C_{i+1}$) > length($C_i$)), this is derived from the main hypothesis of the model:
+- **Step1: Time Interval Partitioning Algorithm**, Due to identity between t=50 and t=51, the partition start from t=52 to t=100. Use greedy algorithm to make partition(when the error in algorithm step7 begins to rise, then stop and separate ), and use different sub-models($M_{bit}(t)$  & $M_{ask}(t)$  for bit/ask prediction respectively). Furthermore, assume the length of later segmentation is larger than the earlier ones(length($C_{i+1}$) > length($C_i$)), this is derived from the main hypothesis of the model:
 
   ```reStructuredText
   'an always increasing prediction error may require averaging longer price time series to obtain a constant price prediction with an acceptable error' 
@@ -96,18 +96,19 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 
   ![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Algorithmic_Trading_Challenge/f3.png)
 
-- **Step2: Feature Extraction**: The author have extracted over 150 features(divided into 4 classes: *Price, Liquidity book, Spread, Rate*) from the original data, using a [specified R module](http:// cran.r-project.org/web/packages/TTR/TTR.pdf]) (I guess)
+- **Step2: Feature Extraction**, The author have extracted over 150 features(divided into 4 classes: *Price, Liquidity book, Spread, Rate*) from the original data, using a [specified R module](http:// cran.r-project.org/web/packages/TTR/TTR.pdf]) (I guess)
 
-####1.3.2 Feature Extraction 
-
-- 提取了超过150种feature，具体分为4类（*Price, Liquidity book, Spread, Rate*）,提取方式参考[引用文献4](http:// cran.r-project.org/web/packages/TTR/TTR.pdf), 是一个R语言的数据分析包
+  ![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Algorithmic_Trading_Challenge/figure5.png)
 
 
 
-####1.3.3 Modeling Approach Selection
+- **Step3: Modeling Approach Selection,** First, using MIC(Maximal Information Coefficient ) to analyze the mutual infromation between features and the dependent variable, revealing a very low mutual information and non-functional relationships; then tried both Random Forest and Gradient Boosting Machines to select the data.(4-cross validation, and the **refined training set** consisted of 1.same size 2. same combination of security_id as the test set, then choose RF for lower RMSE cost. )
 
-- 先用MIC（Maximal Information Coefficient）对原始数据和extracted features进行分析，发现关联性很高。(Pearson, 斯皮尔曼-rank, )
-- 选择了Gradient Boosting Machines和Random Forest两种算法，通过4-fold cross validation（在训练集中选择与测试集数据量(50000)和同样的security_id），同样的cost function(RMSE)，最后选择了Random Forest。
+
+
+####
+
+- **Step4: Feature Selection**, ironically, it seems that 
 - ​
 
 #### 1.3.4 Feature Selection
