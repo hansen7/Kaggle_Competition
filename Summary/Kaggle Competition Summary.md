@@ -108,14 +108,15 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 
 ####
 
-- **Step4: Feature Selection**, ironically, it seems that 
-- ​
+- **Step4: Feature Selection**, the algorithm are divided into 2 parts(1. step1 - 8: to get the quasi-optimized $S_f$ quickly, 2. Rest of the steps: to make local adjustments on these $S_f$ feature set ).
 
-#### 1.3.4 Feature Selection
+  Ironically, the author used the same $S_f$ set for both $F_b$ and $F_a$ (bit and ask feature set for bit and ask price respectively) at the final stage due to the lack of time for calculation.
 
-- 做这么多sub model，结果只有一套feature($F_b$ for bid price, $F_a$ for ask price)。。。然后，最后由于时间不够，只对$F_b$做了优化，$F_a$用的是同一组feature。。。
+  ![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Algorithmic_Trading_Challenge/f6.png)
 
-  ![mage-20180402155112](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804021551121.png)
+  ​
+
+- **Step5: Validation**: the final partition of the time period is {t=52, t=53, t=54–55, t=56–58, t=59–64, t=65–73, t=74–100}
 
 #### 1.3.5 Validation
 
