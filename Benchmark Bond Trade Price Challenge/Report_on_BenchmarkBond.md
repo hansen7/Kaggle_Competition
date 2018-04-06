@@ -2,34 +2,45 @@
 
 ### 2.1 Overview
 
-**Goal** The aim of this competition: **To Predict the next price that a US corporate bond might trade at.** Contestants are given information on the bond including current coupon, time to maturity and a reference price computed by [Benchmark Solutions](http://www.benchmarksolutions.com/).  Details of the previous 10 trades are also provided.  
+**Goal**: 
 
-**Evaluation Method**: Mean Absolute Error *with Weighted Factors(Square Root of the time since the last observation + Normalization)* 这也就意味着最近时间的结果 所占的权重最大
+- The aim of this competition: **To Predict the next price that a US corporate bond might trade at.** Contestants are given information on the bond including current coupon, time to maturity and a reference price computed by [Benchmark Solutions](http://www.benchmarksolutions.com/).  Details of the previous 10 trades are also provided.  
+
+**Submission Format**:
+
+- For each observation, a contestant should provide the expected trade price. In the data section, please see random_forest_sample_submission.csv for an example submission:
+
+  ```python
+  In [2]: submission_template = pd.read_csv('random_forest_sample_submission.csv')
+      
+  In [3]: submission_template
+  Out[3]: 
+             id  trade_price
+  0      762679    98.064530
+  1      762680   116.611906
+  2      762681   104.496657
+  3      762682   106.858986
+  ...       ...          ...
+  61143  823822   123.218163
+  61144  823823    85.358722
+  61145  823824    96.918183
+
+  [61146 rows x 2 columns]
+  ```
+
+  ​
+
+**Evaluation Method**: 
+
+- Mean Absolute Error *with Weighted Factors(Square Root of the time since the last observation + Normalization)*, which means the error in the most recent future has the largest impact on the model evaluation.
 
 
 
 ### 2.2 Data
 
-基本上就提供了train.csv和test.csv两个文件，和一个用来benchmark的R文件
+The host mainly provide train.csv&test.csv, and a R to generate the submission file.
 
-Column details:
-
-- id: The row id. 
-- bond_id: The unique id of a bond to aid in timeseries reconstruction. (This column is only present in the train data)
-- trade_price: The price at which the trade occured.  (This is the column to predict in the test data)
-- **weight**: The weight of the row for evaluation purposes. This is calculated as the square root of the time since the last trade and then scaled so the mean is 1. 
-- current_coupon: The coupon of the bond at the time of the trade.
-- **time_to_maturity**: The number of years until the bond matures at the time of the trade.
-- **is_callable**: A binary value indicating whether or not the bond is callable by the issuer.
-- **reporting_delay**: The number of seconds after the trade occured that it was reported.
-- trade_size: The notional amount of the trade.
-- **trade_type**: 2=customer sell, 3=customer buy, 4=trade between dealers. We would expect customers to get worse prices on average than dealers. 
-- curve_based_price: A fair price estimate based on implied hazard and funding curves of the issuer of the bond.
-- received_time_diff_last{1-10}: The time difference between the trade and that of the previous {1-10}.
-- trade_price_last{1-10}: The trade price of the last {1-10} trades.
-- trade_size_last{1-10}: The notional amount of the last {1-10} trades.
-- trade_type_last{1-10}: The trade type of the last {1-10} trades.
-- curve_based_price_last{1-10}: The curve based price of the last {1-10} trades.
+- There are 61 features of 762678 stocks .
 
 ```python
 In [33]: train_set.index
@@ -65,13 +76,59 @@ In [37]: train_set.columns.size
 Out[37]: 61
 ```
 
+Column details:
+
+- id: The row id. 
+- bond_id: The unique id of a bond to aid in timeseries reconstruction. (This column is only present in the train data)
+- trade_price: The price at which the trade occured.  (This is the column to predict in the test data)
+- **weight**: The weight of the row for evaluation purposes. This is calculated as the square root of the time since the last trade and then scaled so the mean is 1. 
+- current_coupon: The coupon of the bond at the time of the trade.
+- **time_to_maturity**: The number of years until the bond matures at the time of the trade.
+- **is_callable**: A binary value indicating whether or not the bond is callable by the issuer.
+- **reporting_delay**: The number of seconds after the trade occured that it was reported.
+- trade_size: The notional amount of the trade.
+- **trade_type**: 2=customer sell, 3=customer buy, 4=trade between dealers. We would expect customers to get worse prices on average than dealers. 
+- curve_based_price: A fair price estimate based on implied hazard and funding curves of the issuer of the bond.
+- received_time_diff_last{1-10}: The time difference between the trade and that of the previous {1-10}.
+- trade_price_last{1-10}: The trade price of the last {1-10} trades.
+- trade_size_last{1-10}: The notional amount of the last {1-10} trades.
+- trade_type_last{1-10}: The trade type of the last {1-10} trades.
+- curve_based_price_last{1-10}: The curve based price of the last {1-10} trades.
 
 
-### 2.3 Winner's Solution [Top 2(Sergey Yurgenson)'s Comment on Kernel](https://www.kaggle.com/c/benchmark-bond-trade-price-challenge/discussion/1833)
 
-Key Methods: **Random Forest(随机森林)，GBM(???)**
 
-*Other Useful Tutorials can be found here: [1](https://www.slideshare.net/RanZhang14/benchmark-the-actual-bond-prices?from_action=save), [2](http://novieq.blogspot.com/2013/10/benchmark-bond-trade-price-challenge.html), more details can be found on the attached pdf file*
+
+### 2.3 Selected Solutions
+
+### a. [Forum Discussion](https://www.kaggle.com/c/benchmark-bond-trade-price-challenge/discussion/1833)
+
+Key Methods: **Random Forest，Gradient Boosting Machine**
+
+- Sergey Yurgen…  (2nd in this Competition)
+
+  - Initial progress was based on RF model with minor data preprocessing. Actually, we had RF with private score of ~0.727 submitted on Feb 29. 
+  - Then Bruce found what we thought was the "secret" ingredient - GBM. Now we can see that it was not so secret :). We made a good run using GBMs only , however our best submission was ensemble of RFs and GBMs.
+
+  ​
+
+- Sergey Yurgens(6th in this Competition)
+
+  Here is the secret recipe for Linear Regression meal:
+
+  - go to your friendly neighbor datastore and choose couple fresh pieces of data (day1 and last 50k) 
+  - cut out bones and extra fat (leave only columns 5 170 206 207) 
+  - cook separately "seller initiated" transactions and "buyer initiated" transactions using your favorite linear regression function (do it separately for each askN and bidN to be predicted) 
+  - use 200 created LRs to calculate required predictions and nicely plate them into submission ﬁle
+  - Serve hot, because you do not want to miss 0.77590 public score and 0.77956 private score :)
+
+  ​
+
+- Cole Harris • (9th in this Competition) 
+
+  - I had separate models for t\<60 & t>60.Results:
+
+- ​
 
 
 

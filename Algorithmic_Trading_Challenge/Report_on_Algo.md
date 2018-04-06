@@ -1,4 +1,4 @@
-# [1. Algorithmic Trading Challenge](https://www.kaggle.com/c/AlgorithmicTradingChallenge)
+##[1. Algorithmic Trading Challenge](https://www.kaggle.com/c/AlgorithmicTradingChallenge)
 
 ###1.1 Overview
 
