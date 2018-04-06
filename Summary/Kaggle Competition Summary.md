@@ -75,7 +75,7 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 
 ### 1.3 Winner's Solution [PDF](http://www.ms.k.u-tokyo.ac.jp/2013/Kaggle.pdf)
 
-Key Methods: **Time Partitioning Prediction, Random Forest，Ensemble Methods and Feature Extractions.**
+**Key Methods: **Time Partitioning Prediction, Random Forest, Ensemble Methods and Feature Extractions.
 
 
 
@@ -91,6 +91,8 @@ Key Methods: **Time Partitioning Prediction, Random Forest，Ensemble Methods an
   'an always increasing prediction error may require averaging longer price time series to obtain a constant price prediction with an acceptable error' 
   													-Cited from author
   ```
+
+  ![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Algorithmic_Trading_Challenge/f4.png)
 
   ![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Algorithmic_Trading_Challenge/f3.png)
 
