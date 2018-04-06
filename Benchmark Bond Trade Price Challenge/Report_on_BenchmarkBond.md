@@ -170,7 +170,8 @@ Key Methods: **Random Forest，Gradient Boosting Machine**
 
 - **Step1 : data exploration:** We observe from the correlation matrices that attributes Price of the Last Trade and Curve-Based Price of the Last Trade are strongly correlated at all time points; dataset is **class-balanced**; 
 - **Step2: Feature Generation and Selection:** *Correlation Analysis*(No attributes supplied are strongly correlated); *PCA in Supervised Learning*; *Scoring Function for Ensemble Methods*(Random Forests (RF) are used for feature ranking. If feature X appears in 25% of the trees, then score it. Otherwise, we do not consider ranking the feature because we do not have sufﬁcient information about its performance. We then assign the performance score of every tree in which X appears to X and average the score.)
-- **Step3: Model Implementation：** Generalized Linear Model(with PCA), Hybrid Time Series Mothods, Regression Trees, Random Forests(including Ensemble Methods), LS - Boost with RT,  
+- **Step3: Model Implementation：** Generalized Linear Model(with PCA), Hybrid Time Series Mothods, Regression Trees, Random Forests(including Ensemble Methods), LS - Boost with RT(more details can be seen in the paper) 
+- **Comparation and Conclusion:** 
 
 
 
