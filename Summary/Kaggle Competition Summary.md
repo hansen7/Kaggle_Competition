@@ -129,7 +129,18 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 - Pros: Innovated on both *Time Segmentation* and *Feature Selction* process.
 - Cons: In reality, the company only cares about the most recent prediction on the price, input new data and genreate new prediction, so there won't be error accumulation, the *Time Segmentation* process seems to be meaningless, plus, the feature set for the $F_a$ is not optimal.
 
-### b. [Forum Disscussion]
+### b. [Forum Disscussion](https://www.kaggle.com/c/AlgorithmicTradingChallenge/discussion/1236)
+
+- Christopher Hef (4th in this Competition) 
+
+  - Observations on data
+
+  1. Bids/asks from T=1...T=47 seemed to provide little predictive value; 
+  2. The error contribution right at the market open (at 8AM) was extremely large;
+  3. Prediction accuracy varied across time. Using a holdout set & one of our models, I found that the error rose as you got farther from the liquidity-event trade;
+  4. The "liquidity event" trades did not seem to impact prices very much.
+
+  ​
 
 - Sergey Yurgens(6th in this Competition)
 
@@ -141,7 +152,13 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
   - use 200 created LRs to calculate required predictions and nicely plate them into submission ﬁle
   - Serve hot, because you do not want to miss 0.77590 public score and 0.77956 private score :)
 
-#  
+  ​
+
+- Cole Harris • (9th in this Competition) 
+
+  - I had separate models for t\<60 & t>60.
+
+  ​
 
 # [2. Benchmark Bond Trade Price Challenge](https://www.kaggle.com/c/benchmark-bond-trade-price-challenge)
 
