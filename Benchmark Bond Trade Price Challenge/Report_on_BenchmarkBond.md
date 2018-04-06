@@ -108,19 +108,10 @@ Key Methods: **Random Forest，Gradient Boosting Machine**
 - Sergey Yurgen…  (2nd in this Competition)
 
   - Initial progress was based on RF model with minor data preprocessing. Actually, we had RF with private score of ~0.727 submitted on Feb 29. 
+
   - Then Bruce found what we thought was the "secret" ingredient - GBM. Now we can see that it was not so secret :). We made a good run using GBMs only , however our best submission was ensemble of RFs and GBMs.
 
-  ​
-
-- Wayne Zhang (13th in this Competition)
-
-  - I did have the same experience of overﬁtting RF to training data. That's why I turned to linear regression. I agree with Halla, so there may be some normalization.
-  - I also used time weighted VWAP, but I found std not that helpful.
-  - ​
-
-  ​
-
-  ​
+    ​
 
 - Glen • (7th in this Competition) 
 
@@ -128,28 +119,54 @@ Key Methods: **Random Forest，Gradient Boosting Machine**
 
     ​
 
+- desertnaut • (10th in this Competition) 
+
+  - We used random forest for a crude initial forward feature selection, and when we (thought we had) found our feature set we proceeded to modelling with gradient boosting. 
+
+  - This gave very competitive results early on, so we proceeded with detailed parameter tuning and averaging some of our best models' outputs. 
+
+  - no clustering, no test set usage, no outlier detection, only some handling of the missing values. 
+
+  - Tried diﬀerent approaches to variables modelling (averages and diﬀerentials), but it proved that nothing could surpass the non-transformed variables input. We tried to remove from the training set some price value ranges that were not present in the test set, but again this gave inferior results...
+
+    ​
+
+- Halla Yang • (11th in this Competition) 
+
+  - I used a random forest, with a severely limited set of features: thirteen predictive variables. I found most of the variables to be unhelpful, probably because there were intuitive suﬀicient statistics. 
+
+  - It was clear from the data that corporate bonds are very illiquid and that they trade in bursts: weeks or months might elapse with no trade, and then you might see a ﬂurry of matched trades in quick succession as customers and dealers pass the bonds around like hot potatoes. I found it essential to clean/ﬁlter my data, and this is one area where I wish I had spent more time.
+
+    ​
+
+- Wayne Zhang (13th in this Competition)
+
+  - I did have the same experience of overﬁtting RF to training data. That's why I turned to linear regression. I agree with Halla, so there may be some normalization.
+
+  - I also used time weighted VWAP, but I found std not that helpful.
+
+    ​
+
 - ivo • (14th in this Competition) 
 
   - Generated some stats from the curve_based_prices_lastx and trade_price_lastxs (sd, average, median, linear extrapolation) and from some other features like present value of a bond with a given maturity and coupon with 10% reference rates. 
+
   - I only modeled the trading price of a bond, where the received_time_diﬀerence_last1 > 300, because the trade_price_last1 was a suﬀicient predictor on average for those with rtdl1<300. (That may have been a mistake.
+
   - Tried some regression techniques: linear regression, PACE regression, Regression trees (bagged), neural nets, local linear regression. PACE was great overall, neural nets were good where bonds were callable (handled the the callable non callable bonds separately). I clustered the dataset with the training set and reached the highest accuracy by voteing together 69 diﬀerent models.
 
+    ​
 
+### b. [Insight Papers by Stanford Graduates](https://pdfs.semanticscholar.org/c13e/596a3da1ad473de9e2e5f8c15959e63d8d68.pdf)
 
-1. Results
-2. Methods
-3. Comments(Pros and Cons)
+#### b.Results:
 
+- evaluate the performance of various supervised learning algorithms for regression followed by ensemble methods, with feature and model selection considerations being treated in detail.
+- we further evaluate all methods on both accuracy and speed. Finally, we propose **a novel hybrid time-series aided machine learning method** that could be applied to such datasets in future work.
 
+#### b. Work Flow(mainly talked about hybrid time series method)
 
-
-
-
-
-
-
-
-
+- **Step1 : the evaluation method used is different from contest:**
 
 
 
