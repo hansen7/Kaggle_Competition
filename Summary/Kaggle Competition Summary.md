@@ -131,9 +131,15 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 
 ### b. [Forum Disscussion]
 
-#### b. Results: 
+- Sergey Yurgens(6th in this Competition)
 
-- ​
+  Here is the secret recipe for Linear Regression meal:
+
+  - go to your friendly neighbor datastore and choose couple fresh pieces of data (day1 and last 50k) 
+  - cut out bones and extra fat (leave only columns 5 170 206 207) 
+  - cook separately "seller initiated" transactions and "buyer initiated" transactions using your favorite linear regression function (do it separately for each askN and bidN to be predicted) 
+  - use 200 created LRs to calculate required predictions and nicely plate them into submission ﬁle
+  - Serve hot, because you do not want to miss 0.77590 public score and 0.77956 private score :)
 
 #  
 
