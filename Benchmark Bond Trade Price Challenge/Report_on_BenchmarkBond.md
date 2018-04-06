@@ -173,37 +173,16 @@ Key Methods: **Random Forest，Gradient Boosting Machine**
 - **Step3: Model Implementation：** Generalized Linear Model(with PCA), Hybrid Time Series Mothods, Regression Trees, Random Forests(including Ensemble Methods), LS - Boost with RT(more details can be seen in the paper) 
 - **Comparation and Conclusion:** 
 
+![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Benchmark%20Bond%20Trade%20Price%20Challenge/f2.png)
 
 
 
+![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Benchmark%20Bond%20Trade%20Price%20Challenge/f3.png)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### 2.4 Comment
-
-这题原始数据是由股票公司提供的，**高频交易**，因此有很多extracted feature，更偏向于实际情况，feature selection情况也会更加复杂，解答资料也不明晰。
+- - GLM Perform with low computational cost
+  - Ensemble methods do not substantially improve the performance
+  - Neural networks give very accurate results without overfitting in a reasonable amount of time.
 
 
