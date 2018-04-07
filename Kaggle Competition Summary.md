@@ -160,38 +160,49 @@ Out[16]: RangeIndex(start=0, stop=50000, step=1)
 
   ​
 
-# [2. Benchmark Bond Trade Price Challenge](https://www.kaggle.com/c/benchmark-bond-trade-price-challenge)
+## [2. Benchmark Bond Trade Price Challenge](https://www.kaggle.com/c/benchmark-bond-trade-price-challenge)
 
 ### 2.1 Overview
 
-**Goal** The aim of this competition: **To Predict the next price that a US corporate bond might trade at.** Contestants are given information on the bond including current coupon, time to maturity and a reference price computed by [Benchmark Solutions](http://www.benchmarksolutions.com/).  Details of the previous 10 trades are also provided.  
+**Goal**: 
 
-**Evaluation Method**: Mean Absolute Error *with Weighted Factors(Square Root of the time since the last observation + Normalization)* 这也就意味着最近时间的结果 所占的权重最大
+- The aim of this competition: **To Predict the next price that a US corporate bond might trade at.** Contestants are given information on the bond including current coupon, time to maturity and a reference price computed by [Benchmark Solutions](http://www.benchmarksolutions.com/).  Details of the previous 10 trades are also provided.  
 
+**Submission Format**:
 
+- For each observation, a contestant should provide the expected trade price. In the data section, please see random_forest_sample_submission.csv for an example submission:
+
+  ```python
+  In [2]: submission_template = pd.read_csv('random_forest_sample_submission.csv')
+      
+  In [3]: submission_template
+  Out[3]: 
+             id  trade_price
+  0      762679    98.064530
+  1      762680   116.611906
+  2      762681   104.496657
+  3      762682   106.858986
+  ...       ...          ...
+  61143  823822   123.218163
+  61144  823823    85.358722
+  61145  823824    96.918183
+
+  [61146 rows x 2 columns]
+  ```
+
+  ​
+
+**Evaluation Method**: 
+
+- Mean Absolute Error *with Weighted Factors(as shown in the dataset + Normalization)*: so as called WEPS(Weighted Error in Price per Sample)
+
+  ![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Benchmark%20Bond%20Trade%20Price%20Challenge/f1.png)
 
 ### 2.2 Data
 
-基本上就提供了train.csv和test.csv两个文件，和一个用来benchmark的R文件
+The host mainly provide train.csv&test.csv, and a R to generate the submission file.
 
-Column details:
-
-- id: The row id. 
-- bond_id: The unique id of a bond to aid in timeseries reconstruction. (This column is only present in the train data)
-- trade_price: The price at which the trade occured.  (This is the column to predict in the test data)
-- **weight**: The weight of the row for evaluation purposes. This is calculated as the square root of the time since the last trade and then scaled so the mean is 1. 
-- current_coupon: The coupon of the bond at the time of the trade.
-- **time_to_maturity**: The number of years until the bond matures at the time of the trade.
-- **is_callable**: A binary value indicating whether or not the bond is callable by the issuer.
-- **reporting_delay**: The number of seconds after the trade occured that it was reported.
-- trade_size: The notional amount of the trade.
-- **trade_type**: 2=customer sell, 3=customer buy, 4=trade between dealers. We would expect customers to get worse prices on average than dealers. 
-- curve_based_price: A fair price estimate based on implied hazard and funding curves of the issuer of the bond.
-- received_time_diff_last{1-10}: The time difference between the trade and that of the previous {1-10}.
-- trade_price_last{1-10}: The trade price of the last {1-10} trades.
-- trade_size_last{1-10}: The notional amount of the last {1-10} trades.
-- trade_type_last{1-10}: The trade type of the last {1-10} trades.
-- curve_based_price_last{1-10}: The curve based price of the last {1-10} trades.
+- There are 61 features of 762678 stocks .
 
 ```python
 In [33]: train_set.index
@@ -227,117 +238,158 @@ In [37]: train_set.columns.size
 Out[37]: 61
 ```
 
+Column details:
 
-
-### 2.3 Winner's Solution [Top 2(Sergey Yurgenson)'s Comment on Kernel](https://www.kaggle.com/c/benchmark-bond-trade-price-challenge/discussion/1833)
-
-Key Methods: **Random Forest(随机森林)，GBM(???)**
-
-*Other Useful Tutorials can be found here: [1](https://www.slideshare.net/RanZhang14/benchmark-the-actual-bond-prices?from_action=save), [2](http://novieq.blogspot.com/2013/10/benchmark-bond-trade-price-challenge.html), more details can be found on the attached pdf file*
-
-
-
-
-
-1. Results
-2. Methods
-3. Comments(Pros and Cons)
-
-
-
-
-
-
+- id: The row id. 
+- bond_id: The unique id of a bond to aid in timeseries reconstruction. (This column is only present in the train data)
+- trade_price: The price at which the trade occured.  (This is the column to predict in the test data)
+- **weight**: The weight of the row for evaluation purposes. This is calculated as the square root of the time since the last trade and then scaled so the mean is 1. 
+- current_coupon: The coupon of the bond at the time of the trade.
+- **time_to_maturity**: The number of years until the bond matures at the time of the trade.
+- **is_callable**: A binary value indicating whether or not the bond is callable by the issuer.
+- **reporting_delay**: The number of seconds after the trade occured that it was reported.
+- trade_size: The notional amount of the trade.
+- **trade_type**: 2=customer sell, 3=customer buy, 4=trade between dealers. We would expect customers to get worse prices on average than dealers. 
+- curve_based_price: A fair price estimate based on implied hazard and funding curves of the issuer of the bond.
+- received_time_diff_last{1-10}: The time difference between the trade and that of the previous {1-10}.
+- trade_price_last{1-10}: The trade price of the last {1-10} trades.
+- trade_size_last{1-10}: The notional amount of the last {1-10} trades.
+- trade_type_last{1-10}: The trade type of the last {1-10} trades.
+- curve_based_price_last{1-10}: The curve based price of the last {1-10} trades.
 
 
 
+### 2.3 Selected Solutions
+
+### a. [Forum Discussion](https://www.kaggle.com/c/benchmark-bond-trade-price-challenge/discussion/1833)
+
+Key Methods: **Random Forest，Gradient Boosting Machine**
+
+- Sergey Yurgen…  (2nd in this Competition)
+
+  - Initial progress was based on RF model with minor data preprocessing. Actually, we had RF with private score of ~0.727 submitted on Feb 29. 
+
+  - Then Bruce found what we thought was the "secret" ingredient - GBM. Now we can see that it was not so secret :). We made a good run using GBMs only , however our best submission was ensemble of RFs and GBMs.
+
+    ​
+
+- Glen • (7th in this Competition) 
+
+  - I ended up using a combination of locally weighted non-linear regression, random forests and gradient boosting. I only used variables up to curvebasedprice_last4.
+
+    ​
+
+- desertnaut • (10th in this Competition) 
+
+  - We used random forest for a crude initial forward feature selection, and when we (thought we had) found our feature set we proceeded to modelling with gradient boosting. 
+
+  - This gave very competitive results early on, so we proceeded with detailed parameter tuning and averaging some of our best models' outputs. 
+
+  - no clustering, no test set usage, no outlier detection, only some handling of the missing values. 
+
+  - Tried diﬀerent approaches to variables modelling (averages and diﬀerentials), but it proved that nothing could surpass the non-transformed variables input. We tried to remove from the training set some price value ranges that were not present in the test set, but again this gave inferior results...
+
+    ​
+
+- Halla Yang • (11th in this Competition) 
+
+  - I used a random forest, with a severely limited set of features: thirteen predictive variables. I found most of the variables to be unhelpful, probably because there were intuitive suﬀicient statistics. 
+
+  - It was clear from the data that corporate bonds are very illiquid and that they trade in bursts: weeks or months might elapse with no trade, and then you might see a ﬂurry of matched trades in quick succession as customers and dealers pass the bonds around like hot potatoes. I found it essential to clean/ﬁlter my data, and this is one area where I wish I had spent more time.
+
+    ​
+
+- Wayne Zhang (13th in this Competition)
+
+  - I did have the same experience of overﬁtting RF to training data. That's why I turned to linear regression. I agree with Halla, so there may be some normalization.
+
+  - I also used time weighted VWAP, but I found std not that helpful.
+
+    ​
+
+- ivo • (14th in this Competition) 
+
+  - Generated some stats from the curve_based_prices_lastx and trade_price_lastxs (sd, average, median, linear extrapolation) and from some other features like present value of a bond with a given maturity and coupon with 10% reference rates. 
+
+  - I only modeled the trading price of a bond, where the received_time_diﬀerence_last1 > 300, because the trade_price_last1 was a suﬀicient predictor on average for those with rtdl1<300. (That may have been a mistake.
+
+  - Tried some regression techniques: linear regression, PACE regression, Regression trees (bagged), neural nets, local linear regression. PACE was great overall, neural nets were good where bonds were callable (handled the the callable non callable bonds separately). I clustered the dataset with the training set and reached the highest accuracy by voteing together 69 diﬀerent models.
+
+    ​
+
+### b. [Insight Papers by Stanford Graduates](https://pdfs.semanticscholar.org/c13e/596a3da1ad473de9e2e5f8c15959e63d8d68.pdf)
+
+#### b.Results:
+
+- evaluate the performance of various supervised learning algorithms for regression followed by ensemble methods, with feature and model selection considerations being treated in detail.
+- we further evaluate all methods on both accuracy and speed. Finally, we propose **a novel hybrid time-series aided machine learning method** that could be applied to such datasets in future work.
+
+#### b. Work Flow(mainly talked about hybrid time series method)
+
+- **Step1 : data exploration:** We observe from the correlation matrices that attributes Price of the Last Trade and Curve-Based Price of the Last Trade are strongly correlated at all time points; dataset is **class-balanced**; 
+- **Step2: Feature Generation and Selection:** *Correlation Analysis*(No attributes supplied are strongly correlated); *PCA in Supervised Learning*; *Scoring Function for Ensemble Methods*(Random Forests (RF) are used for feature ranking. If feature X appears in 25% of the trees, then score it. Otherwise, we do not consider ranking the feature because we do not have sufﬁcient information about its performance. We then assign the performance score of every tree in which X appears to X and average the score.)
+- **Step3: Model Implementation：** Generalized Linear Model(with PCA), Hybrid Time Series Mothods, Regression Trees, Random Forests(including Ensemble Methods), LS - Boost with RT(more details can be seen in the paper) 
+- **Comparation and Conclusion:** 
+
+![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Benchmark%20Bond%20Trade%20Price%20Challenge/f2.png)
 
 
 
+![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/Benchmark%20Bond%20Trade%20Price%20Challenge/f3.png)
 
 
 
+- - GLM Perform with low computational cost
+  - Ensemble methods do not substantially improve the performance
+  - Neural networks give very accurate results without overfitting in a reasonable amount of time.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### 2.4 Comment
-
-这题原始数据是由股票公司提供的，**高频交易**，因此有很多extracted feature，更偏向于实际情况，feature selection情况也会更加复杂，解答资料也不明晰。
-
-
-
-# [3. The Winton Stock Market Challenge](https://www.kaggle.com/c/the-winton-stock-market-challenge)
+## [3. The Winton Stock Market Challenge](https://www.kaggle.com/c/the-winton-stock-market-challenge)
 
 ### 3.1 Overview
 
-**Goal** To Find the hidden signal in the terabytes of noisy, non-stationary data via novel statistical modelling and data mining techniques. In this competition the challenge is **to predict the return of a stock, given the history of the past few days.**
+**Goal:** 
 
-**Evaluation Method**: Weighted Mean Absolute Error *Weighted Factors is associated with the return* 所用的评价体系跟第二题一样，权重计算方法不同。
+- To Find the hidden signal in the terabytes of noisy, non-stationary data via novel statistical modelling and data mining techniques. In this competition the challenge is **to predict the return of a stock, given the history of the past few days.**
+
+
+
+**Evaluation Method**: 
+
+- Provide 5-day windows of time, days D-2, D-1, D, D+1, and D+2. You are given returns in days D-2, D-1, and part of day D, and you are asked to predict the returns in the rest of day D, and in days D+1 and D+2.
+
+- Weighted Mean Absolute Error *Weighted Factors is associated with the return*(similiar with the Benchmark competition):
+
+  ![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/The%20Winton%20Stock%20Market%20Challenge/f1.png)
+
+  ​
 
 ### 3.2 Data
 
-基本上就提供了train.csv和test.csv两个文件，和一个用来参考作为submission format的csv
+Basically just train.csv&test.csv, and a csv file for the submission template:
 
+![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/The%20Winton%20Stock%20Market%20Challenge/f2.png)
 
-
-![mage-20180401224149](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804012241497.png)
-
-We provide 5-day windows of time, days D-2, D-1, D, D+1, and D+2. You are given returns in days D-2, D-1, and part of day D, and you are asked to predict the returns in the rest of day D, and in days D+1 and D+2.
+Provide 5-day windows of time, days D-2, D-1, D, D+1, and D+2. You are given returns in days D-2, D-1, and part of day D, and you are asked to predict the returns in the rest of day D, and in days D+1 and D+2.
 
 During day D, there is intraday return data, which are the returns at different points in the day. We provide 180 minutes of data, from t=1 to t=180. In the training set you are given the full 180 minutes, in the test set just the first 120 minutes are provided.
 
-For each 5-day window, we also provide 25 features, Feature_1 to Feature_25. These may or may not be useful in your prediction.（更加抽象的feature）
+For each 5-day window, we also provide **25 features**, Feature_1 to Feature_25. These may or may not be useful in your prediction.
 
 Each row in the dataset is an arbitrary stock at an arbitrary 5 day time window.
 
-（一支stock占一行，要求开发一个能够在预测所有stock走势的model？）
+![](https://raw.githubusercontent.com/hansen7/Kaggle_Competition/master/The%20Winton%20Stock%20Market%20Challenge/fig3.png)
 
+### 3.3 Selected Solution
 
-
-More can be visited [here](https://www.kaggle.com/c/the-winton-stock-market-challenge/data).
-
-
-
-### 3.3 Top Solution [Top 2 Discussion](https://www.kaggle.com/c/the-winton-stock-market-challenge/discussion/18591) [Top 15 Discussion](https://www.kaggle.com/c/the-winton-stock-market-challenge/discussion/18584)
-
-Key Methods: **bayesian linear regression**, 没有特别明确的解答，这个问题也是**高频交易**
-
-
+Pretty Tricky this one...
 
 ### 3.4 Comment
 
-这题feature更加抽象，**高频交易**，解答资料基本没有。
 
 
-
-
-
-# [4. Web Traffic Time Series Forecasting](https://www.kaggle.com/c/web-traffic-time-series-forecasting)
+##[4. Web Traffic Time Series Forecasting](https://www.kaggle.com/c/web-traffic-time-series-forecasting)
 
 ### 4.1 Overview
 
@@ -417,7 +469,7 @@ This sampling works as effective data augmentation mechanism: training code rand
 
 #### 4.3.5 Model Core
 
-![mage-20180402165649](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804021656497.png)
+![mage-20180402165649](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-20180407203030391.png)
 
 #### 4.3.6 Working with long timeseries
 
@@ -425,7 +477,7 @@ This sampling works as effective data augmentation mechanism: training code rand
 
   - First trial is called 'attention' method:
 
-    ![mage-20180402202639](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804022026398.png)
+    ![mage-20180402202639](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-20180407203101535.png)
 
     I can just take encoder outputs from `current_day - 365` and `current_day - 90` timepoints, pass them through FC layer to reduce dimensionality and append result to input features for decoder. This solution, despite of being simple, **considerably lowered prediction error.**
 
@@ -437,7 +489,7 @@ This sampling works as effective data augmentation mechanism: training code rand
 
   - 但其实最好的public score反倒是最简单的模型：
 
-    ![mage-20180402204822](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804022048228.png)
+    ![image-20180407203120943](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-20180407203120943.png)
 
   - 另外发现60-90day的encoder表现也还okay
 
@@ -452,7 +504,7 @@ This sampling works as effective data augmentation mechanism: training code rand
 
 - Prefer walk-forward split rather than side-by-side split
 
-  ![mage-20180402210447](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804022104479.png)
+  ![image-20180407203136483](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-20180407203136483.png)
 
 #### 4.3.9 Reducing model variance
 
@@ -473,7 +525,7 @@ solution set非常丰富，1st place有着详细的code和readme，用的是RNN�
 
 
 
-# [5. Two Sigma Financial Modeling Challenge](https://www.kaggle.com/c/two-sigma-financial-modeling)
+##[5. Two Sigma Financial Modeling Challenge](https://www.kaggle.com/c/two-sigma-financial-modeling)
 
 ### 5.1 Overview
 
@@ -481,11 +533,9 @@ solution set非常丰富，1st place有着详细的code和readme，用的是RNN�
 
 **Evaluation Method**: R Value(signed square root of R^2 value), Negative R values are clipped at -1, i.e. the score you see will be max(−1,R)max(−1,R)
 
-![mage-20180401234614](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804012346141.png)
+![mage-20180401234614](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-20180407203255682.png)
 
-![mage-20180401234602](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804012346027.png)
-
-
+![image-20180407203317953](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-20180407203317953.png)
 
 ### 5.2 Data
 
@@ -521,9 +571,7 @@ solution set不是很丰富，我看他们的解答都各种说“black magic”
 
 
 
-
-
-# [6. Predict short term movements in stock prices using news and sentiment data provided by RavenPack](https://www.kaggle.com/c/battlefin-s-big-data-combine-forecasting-challenge)
+##[6. Predict short term movements in stock prices using news and sentiment data provided by RavenPack](https://www.kaggle.com/c/battlefin-s-big-data-combine-forecasting-challenge)
 
 ### 6.1 Overview
 
@@ -531,7 +579,7 @@ solution set不是很丰富，我看他们的解答都各种说“black magic”
 
 **Evaluation Method**: mean absolute error
 
-![mage-20180402004611](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-201804020046110.png)
+![image-20180407203408225](/var/folders/c_/q1g90c_s3d712_h2cljszmx40000gp/T/abnerworks.Typora/image-20180407203408225.png)
 
 ### 6.2 Data
 
